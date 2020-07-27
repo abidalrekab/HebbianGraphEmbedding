@@ -133,6 +133,7 @@ def _generate_walks(d_graph, walk_length=30, num_walks=200, workers=4) -> list:
     walks = flatten(walk_results)
 
     return walks
+
 def CountFrequency(my_list, freq):
     # Creating an empty dictionary
     for item in my_list:
@@ -142,16 +143,11 @@ def CountFrequency(my_list, freq):
             freq[item] = 1
     return freq
 
-def Hsoftmax(freq):
-    HuffmanTree = nx.graph()
-    for k in sorted(freq, key = freq.get, reverse= False):
-        pass
-
 def GraphDegree(G):
     degree_sequence = np.asarray([d for n, d in G.degree()])  # degree sequence
     node_sequence =   np.asarray([n for n, d in G.degree()])  # degree sequence
-    print("Degree sequence", degree_sequence)
-    print("node sequence", node_sequence)
+    #print("Degree sequence", degree_sequence)
+    #print("node sequence", node_sequence)
     fig, ax = plt.subplots()
     plt.bar(node_sequence, degree_sequence, width=0.80, color='b')
     plt.title("Degrees Histogram")
@@ -165,8 +161,8 @@ def RandomWalkHist(freq):
 
     frequency_count = np.asarray([d for n, d in list_key_value])
     node_sequence = np.asarray([n for n, d in list_key_value])
-    print("Degree sequence", frequency_count)
-    print("node sequence", node_sequence)
+    #print("Degree sequence", frequency_count)
+    #print("node sequence", node_sequence)
     fig, ax = plt.subplots()
     plt.bar(node_sequence, frequency_count, width=0.80, color='b')
     plt.title("Frequency Histogram")
@@ -175,35 +171,3 @@ def RandomWalkHist(freq):
     plt.show()
 
 
-# Create a graph
-#graph = nx.karate_club_graph()
-n =10
-p = 0.5
-graph = nx.fast_gnp_random_graph(n, p)
-nx.draw_networkx(graph, with_labels=True)
-rcm = list(cuthill_mckee_ordering(graph))
-A = nx.adjacency_matrix(graph, nodelist=rcm)
-d_graph = _precompute_probabilities(graph)
-walk_results = _generate_walks(d_graph, walk_length=5, num_walks=200, workers=4)
-#freq = {}
-#for idx, item in enumerate(walk_results):
-#    freq = CountFrequency(item, freq)
-
-#for key, value in freq.items():
-#    print("% d : % d" % (int(key), value))
-
-#RandomWalkHist(freq)
-#GraphDegree(graph)
-print(d_graph)
-for node in range(n):
-    print("----------- {} -------------".format(node))
-    retrun_prob = []
-    n_neighbors = d_graph[node]['neighbors']
-    prob = d_graph[node]['probabilities']
-    print('nodes', n_neighbors)
-    print('probabilities', prob)
-    for index, neighbor in enumerate(n_neighbors):
-        print(neighbor)
-        retrun_prob.append(prob[neighbor][index])
-    print('return probability of {} is {} '.format(node, retrun_prob))
-    print(sum(retrun_prob))
