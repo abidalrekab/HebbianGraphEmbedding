@@ -2,7 +2,6 @@ from datetime import date
 print(date)
 import pymc3 as pm
 from random import seed
-from collections import defaultdict, Counter, OrderedDict
 import matplotlib.pyplot as plt
 from networkx.utils import cuthill_mckee_ordering
 import networkx as nx
@@ -14,7 +13,7 @@ import numpy as np, pandas as pd, seaborn as sns
 from precomputed_probabilities import _precompute_probabilities, _generate_walks
 from Mixture_weights import Mixture_weights
 from node2vec import Node2Vec
-
+from numpy import linalg as LA
 # Create a graph
 #graph = nx.karate_club_graph()
 seed(1)
@@ -46,8 +45,6 @@ def choicess(neighbors):
     return np.delete(l, neighbors)
 
 for m in range(iterations):
-
-    print
     cov1 = sigma ** 2 * np.eye(embedding_dim)
 
     for i in range(Number_of_nodes):
@@ -64,12 +61,31 @@ for m in range(iterations):
 
         embeddings[i,:] = wi
     sigma = sigma/tao
-print(embeddings[0,:])
+def simialrity(embedding):
+    n,m = embedding.shape
+    s = np.zeros((n, n))
+    for i in range(n):
+        for j in range(n):
+            if i==0 and j==0:
+                s[i][j] = 1
+            x = embedding[i,:]
+            y = embedding[j,:]
+            s[i][j] = np.dot(x,y)/ (LA.norm(x) * LA.norm(y) )
+    return s
+
+s = simialrity(embeddings)
+fig, ax = plt.subplots()
+im = ax.imshow(s)
+ax.set_xticklabels(np.arange(10))
+ax.set_yticklabels(np.arange(10))
+ax.set_title("Harvest of local farmers (in tons/year)")
+fig.tight_layout()
+plt.show()
 # Precompute probabilities and generate walks - **ON WINDOWS ONLY WORKS WITH workers=1**
-node2vec = Node2Vec(graph, dimensions=128, walk_length=5, num_walks=200, workers=4)  # Use temp_folder for big graphs
+#node2vec = Node2Vec(graph, dimensions=128, walk_length=5, num_walks=200, workers=4)  # Use temp_folder for big graphs
 # Embed nodes
-model = node2vec.fit(window=10, min_count=1, batch_words=4)  # Any keywords acceptable by gensim.Word2Vec can be passed, `diemnsions` and `workers` are automatically passed (from the Node2Vec constructor)
+#model = node2vec.fit(window=10, min_count=1, batch_words=4)  # Any keywords acceptable by gensim.Word2Vec can be passed, `diemnsions` and `workers` are automatically passed (from the Node2Vec constructor)
 # Look for most similar nodes
-model.wv.most_similar('2')  # Output node names are always strings
+#model.wv.most_similar('2')  # Output node names are always strings
 # Save embeddings for later use
-model.wv.save_word2vec_format(EMBEDDING_FILENAME)
+#model.wv.save_word2vec_format(EMBEDDING_FILENAME)
