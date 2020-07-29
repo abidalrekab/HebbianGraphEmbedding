@@ -1,6 +1,7 @@
 from datetime import date
 print(date)
 import pymc3 as pm
+import theano
 from random import seed
 import matplotlib.pyplot as plt
 from networkx.utils import cuthill_mckee_ordering
@@ -20,7 +21,7 @@ seed(1)
 Number_of_nodes = 10                                                                                                    # the graph nodes
 p = 0.5                                                                                                                 # probability of connecting two nodes
 embedding_dim = 128
-sigma  = np.sqrt(10)
+sigma = np.sqrt(10)
 mu1 = np.zeros(embedding_dim)
 iterations = 100
 graph = nx.fast_gnp_random_graph(Number_of_nodes, p)                                                                    # generate the graph
